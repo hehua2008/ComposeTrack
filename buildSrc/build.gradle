@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+    //id 'groovy'
+    id 'org.jetbrains.kotlin.jvm' version '1.6.10'
+    id 'java-gradle-plugin'
+}
+
+repositories {
+    google()
+    mavenCentral()
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+compileKotlin {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+dependencies {
+    //implementation localGroovy()
+    //implementation gradleApi()
+    implementation "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10"
+    implementation "com.android.tools.build:gradle:7.0.4"
+    implementation "com.android.tools.build:gradle-api:7.0.4"
+    implementation "commons-io:commons-io:2.9.0"
+    //implementation "commons-codec:commons-codec:1.15"
+    implementation "org.ow2.asm:asm:9.2"
+    implementation "org.ow2.asm:asm-tree:9.2"
+}
