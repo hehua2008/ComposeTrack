@@ -8,7 +8,7 @@ import com.hym.composetrack.currentRootNode
 import java.util.*
 
 /**
- * @author ganmin.he
+ * @author hehua2008
  * @date 2022/1/12
  */
 private val rootNodeCallbackMap = WeakHashMap<LayoutNodeInfo, ClickableCallback>()

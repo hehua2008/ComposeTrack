@@ -9,7 +9,7 @@ import java.util.*
 import kotlin.collections.set
 
 /**
- * @author ganmin.he
+ * @author hehua2008
  * @date 2021/12/3
  */
 private val currentRootNodeMap: WeakHashMap<Composer, LayoutNodeInfo?> = WeakHashMap()

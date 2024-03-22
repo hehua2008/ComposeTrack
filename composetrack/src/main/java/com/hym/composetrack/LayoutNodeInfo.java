@@ -10,15 +10,10 @@ import androidx.compose.ui.Modifier;
 import androidx.compose.ui.geometry.Rect;
 import androidx.compose.ui.layout.LayoutCoordinates;
 import androidx.compose.ui.layout.LayoutCoordinatesKt;
-import androidx.compose.ui.layout.LayoutIdKt;
 import androidx.compose.ui.layout.LayoutInfo;
-import androidx.compose.ui.layout.Measurable;
 import androidx.compose.ui.layout.MeasurePolicy;
 import androidx.compose.ui.layout.Remeasurement;
-import androidx.compose.ui.node.ComposeUiNode;
 import androidx.compose.ui.node.LayoutNode;
-import androidx.compose.ui.node.Owner;
-import androidx.compose.ui.node.OwnerScope;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +21,7 @@ import java.util.List;
 import kotlin.Unit;
 
 /**
- * @author ganmin.he
+ * @author hehua2008
  * @date 2021/12/1
  */
 public class LayoutNodeInfo {
@@ -40,36 +35,13 @@ public class LayoutNodeInfo {
     }
 
     @NonNull
-    public Measurable asMeasurable() {
-        return mNode;
-    }
-
-    @NonNull
     public Remeasurement asRemeasurement() {
-        return mNode;
-    }
-
-    @NonNull
-    public OwnerScope asOwnerScope() {
         return mNode;
     }
 
     @NonNull
     public LayoutInfo asLayoutInfo() {
         return mNode;
-    }
-
-    @NonNull
-    public ComposeUiNode asComposeUiNode() {
-        return mNode;
-    }
-
-    /**
-     * @return The tag associated to a composable with the Modifier.layoutId modifier.
-     */
-    @Nullable
-    public Object getLayoutId() {
-        return LayoutIdKt.getLayoutId(mNode);
     }
 
     /**
@@ -116,7 +88,7 @@ public class LayoutNodeInfo {
      * @return The view system Owner. This null until attach is called.
      */
     @Nullable
-    public Owner getOwner() {
+    public Object getOwner() {
         return mNode.getOwner$ui_release();
     }
 
@@ -201,19 +173,19 @@ public class LayoutNodeInfo {
     }
 
     /**
-     * @return The tag associated to a composable with the Modifier.identity modifier.
+     * @return The tag associated to a composable with the Modifier.trackId modifier.
      */
     @Nullable
-    public Identity getIdentity() {
-        return LayoutNodeHelper.getIdentity(mNode);
+    public TrackId getTrackId() {
+        return LayoutNodeHelper.getTrackId(mNode);
     }
 
     /**
-     * @return Identity path from root LayoutNode to this LayoutNode.
+     * @return TrackId path from root LayoutNode to this LayoutNode.
      */
     @NonNull
-    public String getIdentityPath() {
-        return LayoutNodeHelper.getIdentityPath(mNode);
+    public String getTrackIdPath() {
+        return LayoutNodeHelper.getTrackIdPath(mNode);
     }
 
     /**

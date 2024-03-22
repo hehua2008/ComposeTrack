@@ -1,7 +1,7 @@
 package androidx.compose.runtime
 
 /**
- * @author ganmin.he
+ * @author hehua2008
  * @date 2022/1/6
  *
  * This will be used in [Trace] and [TraceListener]

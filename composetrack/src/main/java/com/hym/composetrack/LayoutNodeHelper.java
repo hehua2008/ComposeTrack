@@ -10,16 +10,15 @@ import androidx.compose.runtime.CompositionContext;
 import androidx.compose.runtime.Recomposer;
 import androidx.compose.ui.Modifier;
 import androidx.compose.ui.layout.LayoutCoordinatesKt;
-import androidx.compose.ui.layout.LayoutIdKt;
+import androidx.compose.ui.layout.ModifierInfo;
 import androidx.compose.ui.node.LayoutNode;
-import androidx.compose.ui.node.Owner;
 import androidx.compose.ui.platform.WindowRecomposer_androidKt;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author ganmin.he
+ * @author hehua2008
  * @date 2022/1/7
  */
 public final class LayoutNodeHelper {
@@ -57,26 +56,43 @@ public final class LayoutNodeHelper {
     }
 
     /**
-     * @return The tag associated to a composable with the Modifier.identity modifier.
+     * @return A new List of Modifiers and the coordinates and any extra information
+     * that may be useful. This is used for tooling to retrieve layout modifier and layer
+     * information.
      */
-    @Nullable
-    public static Identity getIdentity(@NonNull LayoutNode node) {
-        Object obj = LayoutIdKt.getLayoutId(node);
-        return (obj instanceof Identity) ? (Identity) obj : null;
+    @NonNull
+    public static List<ModifierInfo> getModifierInfo(@NonNull LayoutNode node) {
+        return node.getModifierInfo();
     }
 
     /**
-     * @return Identity path from root LayoutNode to this LayoutNode.
+     * @return The tag associated to a composable with the Modifier.trackId modifier.
+     */
+    @Nullable
+    public static TrackId getTrackId(@NonNull LayoutNode node) {
+        List<Modifier> list = getModifiers(node);
+        TrackIdElement trackIdElement = null;
+        for (Modifier modifier : list) {
+            if (modifier instanceof TrackIdElement) {
+                trackIdElement = (TrackIdElement) modifier;
+                break;
+            }
+        }
+        return (trackIdElement != null) ? trackIdElement.getTrackId() : null;
+    }
+
+    /**
+     * @return TrackId path from root LayoutNode to this LayoutNode.
      */
     @NonNull
-    public static String getIdentityPath(@NonNull LayoutNode node) {
+    public static String getTrackIdPath(@NonNull LayoutNode node) {
         StringBuilder sb = new StringBuilder();
         List<LayoutNode> nodes = getAncestors(node);
         nodes.add(node);
         for (LayoutNode nd : nodes) {
-            Identity identity = getIdentity(nd);
-            if (identity != null) {
-                sb.append(identity.getName());
+            TrackId trackId = getTrackId(nd);
+            if (trackId != null) {
+                sb.append(trackId.getName());
             } else {
                 Class<?> measurePolicyClz = nd.getMeasurePolicy().getClass();
                 Class<?> enclosingClass = measurePolicyClz.getEnclosingClass();
@@ -104,7 +120,7 @@ public final class LayoutNodeHelper {
      */
     @Nullable
     public static View getOwnerView(@NonNull LayoutNode node) {
-        Owner owner = node.getOwner$ui_release();
+        Object owner = node.getOwner$ui_release();
         return (owner instanceof View) ? (View) owner : null;
     }
 
@@ -114,7 +130,7 @@ public final class LayoutNodeHelper {
      */
     @Nullable
     public static Recomposer getRecomposer(@NonNull LayoutNode node) {
-        Owner owner = node.getOwner$ui_release();
+        Object owner = node.getOwner$ui_release();
         if (!(owner instanceof View)) return null;
         final View ownerView = (View) owner;
         CompositionContext found = WindowRecomposer_androidKt.getCompositionContext(ownerView);
@@ -138,7 +154,7 @@ public final class LayoutNodeHelper {
         final List<LayoutNode> nodeList = new ArrayList<>();
         if (BuildConfig.DEBUG) {
             traverseLayoutNodeTree(rootNode, node -> {
-                if (modifier instanceof Identity && getIdentity(node) == modifier
+                if (modifier instanceof TrackId && getTrackId(node) == modifier
                         || getModifiers(node).contains(modifier)) {
                     nodeList.add(node);
                 }
@@ -150,7 +166,7 @@ public final class LayoutNodeHelper {
             return nodeList.get(0);
         } else {
             return findInLayoutNodeTree(rootNode, curNode ->
-                    (modifier instanceof Identity && getIdentity(curNode) == modifier
+                    (modifier instanceof TrackId && getTrackId(curNode) == modifier
                             || getModifiers(curNode).contains(modifier)));
         }
     }
@@ -177,7 +193,7 @@ public final class LayoutNodeHelper {
 
     public static void layoutNodeToString(@NonNull LayoutNode node, @NonNull StringBuilder sb) {
         sb.append("LayoutNode@" + String.format("%07x", System.identityHashCode(node)))
-                .append("  identity=").append(getIdentity(node))
+                .append("  trackId=").append(getTrackId(node))
                 .append("  depth=").append(node.getDepth$ui_release())
                 .append("  childSize=").append(node.get_children$ui_release().getSize())
                 .append("  boundsInWindow=")

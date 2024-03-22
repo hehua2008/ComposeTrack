@@ -59,7 +59,7 @@ object ModifyAndroidComposeView {
                 Opcodes.INVOKESTATIC,
                 "androidx/compose/runtime/OnAttachOnDetachListener",
                 "onAttach",
-                "(Landroidx/compose/ui/platform/AndroidComposeView;Landroidx/compose/ui/node/LayoutNode;)V",
+                "(Landroid/view/View;Landroidx/compose/ui/node/LayoutNode;)V",
                 false
             )
         }
@@ -75,7 +75,7 @@ object ModifyAndroidComposeView {
                 Opcodes.INVOKESTATIC,
                 "androidx/compose/runtime/OnAttachOnDetachListener",
                 "onDetach",
-                "(Landroidx/compose/ui/platform/AndroidComposeView;Landroidx/compose/ui/node/LayoutNode;)V",
+                "(Landroid/view/View;Landroidx/compose/ui/node/LayoutNode;)V",
                 false
             )
         }

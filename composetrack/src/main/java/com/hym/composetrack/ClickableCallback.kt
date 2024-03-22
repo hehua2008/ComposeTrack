@@ -1,7 +1,7 @@
 package com.hym.composetrack
 
 /**
- * @author ganmin.he
+ * @author hehua2008
  * @date 2022/1/12
  */
 interface ClickableCallback {
