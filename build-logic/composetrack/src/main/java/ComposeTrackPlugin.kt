@@ -3,6 +3,9 @@ import com.android.build.api.instrumentation.InstrumentationScope
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 import com.android.build.api.variant.ScopedArtifacts
 import com.android.build.gradle.AppPlugin
+import com.hym.composetrack.ModifyAndroidComposeViewClassVisitorFactory
+import com.hym.composetrack.ModifyClickableClassVisitorFactory
+import com.hym.composetrack.ModifyTraceClassVisitorFactory
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.configurationcache.extensions.capitalized
@@ -32,12 +35,29 @@ class ComposeTrackPlugin : Plugin<Project> {
             androidComponents.onVariants { variant ->
                 // Call the transformClassesWith API: supply the class visitor factory, and specify the scope and
                 // parameters
+                /*
                 variant.instrumentation.transformClassesWith(
                     ExampleClassVisitorFactory::class.java,
                     InstrumentationScope.PROJECT
                 ) { params ->
                     params.newMethodName.set("transformedMethod")
                 }
+                */
+
+                variant.instrumentation.transformClassesWith(
+                    ModifyClickableClassVisitorFactory::class.java,
+                    InstrumentationScope.ALL
+                ) { }
+
+                variant.instrumentation.transformClassesWith(
+                    ModifyAndroidComposeViewClassVisitorFactory::class.java,
+                    InstrumentationScope.ALL
+                ) { }
+
+                variant.instrumentation.transformClassesWith(
+                    ModifyTraceClassVisitorFactory::class.java,
+                    InstrumentationScope.ALL
+                ) { }
 
                 // -- Verification --
                 // the following is just to validate the recipe and is not actually part of the recipe itself
@@ -51,12 +71,12 @@ class ComposeTrackPlugin : Plugin<Project> {
                 // This creates a dependency on the classes in the project scope, which will run the
                 // necessary tasks to build the classes artifact and trigger the transformation
                 variant.artifacts
-                    .forScope(ScopedArtifacts.Scope.PROJECT)
+                    .forScope(ScopedArtifacts.Scope.ALL)
                     .use(taskProvider)
                     .toGet(
                         ScopedArtifact.CLASSES,
-                        CheckAsmTransformationTask::projectJars,
-                        CheckAsmTransformationTask::projectDirectories,
+                        CheckAsmTransformationTask::inputJars,
+                        CheckAsmTransformationTask::inputDirectories,
                     )
             }
         }

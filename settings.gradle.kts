@@ -23,5 +23,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ComposeTrackNew"
+rootProject.name = "ComposeTrack"
 include(":demo")
+include(":composetrack")
+include(":composetrackstub")
