@@ -41,9 +41,7 @@ class MainActivity : ComponentActivity() {
             // 获取根节点
             currentRootNode.apply {
                 // 为根节点设置 root 标识
-                modifier?.trackId("root")?.let {
-                    setModifier(it)
-                }
+                modifier = modifier?.trackId("root")
             }
 
             SetClickableCallback(object : ClickableCallback {
