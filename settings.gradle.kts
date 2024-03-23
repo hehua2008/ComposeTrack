@@ -26,4 +26,4 @@ dependencyResolutionManagement {
 rootProject.name = "ComposeTrack"
 include(":demo")
 include(":composetrack")
-include(":composetrackstub")
+include(":composetrack:composetrackstub")

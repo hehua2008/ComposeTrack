@@ -24,7 +24,7 @@
             <option value="$PROJECT_DIR$/build-logic" />
             <option value="$PROJECT_DIR$/build-logic/composetrack" />
             <option value="$PROJECT_DIR$/composetrack" />
-            <option value="$PROJECT_DIR$/composetrackstub" />
+            <option value="$PROJECT_DIR$/composetrack/composetrackstub" />
             <option value="$PROJECT_DIR$/demo" />
           </set>
         </option>
