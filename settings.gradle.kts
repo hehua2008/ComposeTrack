@@ -1,5 +1,7 @@
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
+        maven { url = uri("") }
         google {
             content {
                 includeGroupByRegex("com\\.android.*")
@@ -15,10 +17,11 @@ pluginManagement {
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
+        maven { url = uri("") }
         google()
         mavenCentral()
     }
 }
 
-rootProject.name = "ComposeTrackNew"
+rootProject.name = "ComposeTrack"
 include(":demo")

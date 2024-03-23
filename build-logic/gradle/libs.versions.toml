@@ -1,0 +1,25 @@
+[versions]
+agp = "8.3.1"
+kotlin = "1.9.23"
+
+asm = "9.6"
+commonsIo = "2.15.1"
+commonsCodec = "1.16.1"
+javapoet = "1.13.0"
+
+[libraries]
+android-gradle-api = { group = "com.android.tools.build", name = "gradle-api", version.ref = "agp" }
+android-gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+
+asm = { group = "org.ow2.asm", name = "asm", version.ref = "asm" }
+asm-tree = { group = "org.ow2.asm", name = "asm-tree", version.ref = "asm" }
+asm-util = { group = "org.ow2.asm", name = "asm-util", version.ref = "asm" }
+commons-io = { group = "commons-io", name = "commons-io", version.ref = "commonsIo" }
+commons-codec = { group = "commons-codec", name = "commons-codec", version.ref = "commonsCodec" }
+javapoet = { group = "com.squareup", name = "javapoet", version.ref = "javapoet" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
