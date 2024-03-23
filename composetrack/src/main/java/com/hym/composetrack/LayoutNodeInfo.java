@@ -16,6 +16,7 @@ import androidx.compose.ui.layout.MeasurePolicy;
 import androidx.compose.ui.layout.Remeasurement;
 import androidx.compose.ui.node.LayoutNode;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,65 +30,75 @@ public class LayoutNodeInfo {
     private static final String TAG = "LayoutNodeInfo";
 
     @NonNull
-    private final LayoutNode mNode;
+    private final WeakReference<LayoutNode> mNode;
 
     public LayoutNodeInfo(@NonNull LayoutInfo node) {
-        mNode = (LayoutNode) node;
+        mNode = new WeakReference((LayoutNode) node);
     }
 
-    @NonNull
+    @Nullable
     public ComposeNodeLifecycleCallback asComposeNodeLifecycleCallback() {
-        return mNode;
+        return mNode.get();
     }
 
-    @NonNull
+    @Nullable
     public Remeasurement asRemeasurement() {
-        return mNode;
+        return mNode.get();
     }
 
-    @NonNull
+    @Nullable
     public LayoutInfo asLayoutInfo() {
-        return mNode;
+        return mNode.get();
     }
 
     /**
      * @return Coordinates of just the contents of the LayoutNode, after being affected by all
      * modifiers.
      */
-    @NonNull
+    @Nullable
     public LayoutCoordinates getCoordinates() {
-        return mNode.getCoordinates();
+        LayoutNode node = mNode.get();
+        if (node == null) return null;
+        return node.getCoordinates();
     }
 
     /**
      * @return The boundaries of this layout relative to the window's origin.
      */
-    @NonNull
+    @Nullable
     public Rect getBoundsInWindow() {
-        return LayoutCoordinatesKt.boundsInWindow(mNode.getCoordinates());
+        LayoutNode node = mNode.get();
+        if (node == null) return null;
+        return LayoutCoordinatesKt.boundsInWindow(node.getCoordinates());
     }
 
     /**
      * @return Blocks that define the measurement and intrinsic measurement of the layout.
      */
-    @NonNull
+    @Nullable
     public MeasurePolicy getMeasurePolicy() {
-        return mNode.getMeasurePolicy();
+        LayoutNode node = mNode.get();
+        if (node == null) return null;
+        return node.getMeasurePolicy();
     }
 
     /**
      * @return The Modifier currently applied to this node.
      */
-    @NonNull
+    @Nullable
     public Modifier getModifier() {
-        return mNode.getModifier();
+        LayoutNode node = mNode.get();
+        if (node == null) return null;
+        return node.getModifier();
     }
 
     /**
      * @return Apply the specified Modifier to this node.
      */
     public void setModifier(@NonNull Modifier modifier) {
-        mNode.setModifier(modifier);
+        LayoutNode node = mNode.get();
+        if (node == null) return;
+        node.setModifier(modifier);
     }
 
     /**
@@ -95,7 +106,9 @@ public class LayoutNodeInfo {
      */
     @Nullable
     public Object getOwner() {
-        return mNode.getOwner$ui_release();
+        LayoutNode node = mNode.get();
+        if (node == null) return null;
+        return node.getOwner$ui_release();
     }
 
     /**
@@ -103,7 +116,9 @@ public class LayoutNodeInfo {
      */
     @Nullable
     public View getOwnerView() {
-        return LayoutNodeHelper.getOwnerView(mNode);
+        LayoutNode node = mNode.get();
+        if (node == null) return null;
+        return LayoutNodeHelper.getOwnerView(node);
     }
 
     /**
@@ -112,7 +127,9 @@ public class LayoutNodeInfo {
      */
     @Nullable
     public Recomposer getRecomposer() {
-        return LayoutNodeHelper.getRecomposer(mNode);
+        LayoutNode node = mNode.get();
+        if (node == null) return null;
+        return LayoutNodeHelper.getRecomposer(node);
     }
 
     /**
@@ -120,23 +137,29 @@ public class LayoutNodeInfo {
      * hierarchy.
      */
     public int getDepth() {
-        return mNode.getDepth$ui_release();
+        LayoutNode node = mNode.get();
+        if (node == null) return 0;
+        return node.getDepth$ui_release();
     }
 
     /**
      * @return The size of children.
      */
-    @NonNull
+    @Nullable
     public int getChildrenSize() {
-        return mNode.get_children$ui_release().getSize();
+        LayoutNode node = mNode.get();
+        if (node == null) return 0;
+        return node.get_children$ui_release().getSize();
     }
 
     /**
      * @return The children of this LayoutNode.
      */
-    @NonNull
+    @Nullable
     public List<LayoutNodeInfo> getChildren() {
-        MutableVector<LayoutNode> nodeChildren = mNode.get_children$ui_release();
+        LayoutNode node = mNode.get();
+        if (node == null) return null;
+        MutableVector<LayoutNode> nodeChildren = node.get_children$ui_release();
         List<LayoutNodeInfo> nodeInfoChildren = new ArrayList<>(nodeChildren.getSize());
         nodeChildren.forEach(layoutNode -> {
             nodeInfoChildren.add(new LayoutNodeInfo(layoutNode));
@@ -150,7 +173,9 @@ public class LayoutNodeInfo {
      */
     @Nullable
     public LayoutNodeInfo getParent() {
-        LayoutNode parentNode = mNode.getParent$ui_release();
+        LayoutNode node = mNode.get();
+        if (node == null) return null;
+        LayoutNode parentNode = node.getParent$ui_release();
         if (parentNode == null) return null;
         return new LayoutNodeInfo(parentNode);
     }
@@ -159,10 +184,13 @@ public class LayoutNodeInfo {
      * @return All ancestor nodes in the LayoutNode hierarchy, from root LayoutNode to direct parent
      * LayoutNode.
      */
-    @NonNull
+    @Nullable
     public List<LayoutNodeInfo> getAncestors() {
-        List<LayoutNodeInfo> ancestors = new ArrayList<>(getDepth());
+        LayoutNode node = mNode.get();
+        if (node == null) return null;
         LayoutNodeInfo parent = getParent();
+        if (parent == null) return null;
+        List<LayoutNodeInfo> ancestors = new ArrayList<>(getDepth());
         while (parent != null) {
             ancestors.add(0, parent);
             parent = parent.getParent();
@@ -173,9 +201,11 @@ public class LayoutNodeInfo {
     /**
      * @return The all modifiers of the specified LayoutNode.
      */
-    @NonNull
+    @Nullable
     public List<Modifier> getModifiers() {
-        return LayoutNodeHelper.getModifiers(mNode);
+        LayoutNode node = mNode.get();
+        if (node == null) return null;
+        return LayoutNodeHelper.getModifiers(node);
     }
 
     /**
@@ -183,15 +213,19 @@ public class LayoutNodeInfo {
      */
     @Nullable
     public TrackId getTrackId() {
-        return LayoutNodeHelper.getTrackId(mNode);
+        LayoutNode node = mNode.get();
+        if (node == null) return null;
+        return LayoutNodeHelper.getTrackId(node);
     }
 
     /**
      * @return TrackId path from root LayoutNode to this LayoutNode.
      */
-    @NonNull
+    @Nullable
     public String getTrackIdPath() {
-        return LayoutNodeHelper.getTrackIdPath(mNode);
+        LayoutNode node = mNode.get();
+        if (node == null) return null;
+        return LayoutNodeHelper.getTrackIdPath(node);
     }
 
     /**
@@ -201,31 +235,39 @@ public class LayoutNodeInfo {
     @Nullable
     public LayoutNodeInfo findLayoutNodeInfo(@NonNull Modifier modifier)
             throws IllegalStateException {
-        final LayoutNode node = LayoutNodeHelper.findLayoutNode(mNode, modifier);
+        LayoutNode node = mNode.get();
         if (node == null) return null;
-        return new LayoutNodeInfo(node);
+        final LayoutNode foundNode = LayoutNodeHelper.findLayoutNode(node, modifier);
+        if (foundNode == null) return null;
+        return new LayoutNodeInfo(foundNode);
     }
 
     @Override
     public int hashCode() {
-        return mNode.hashCode();
+        return super.hashCode();
     }
 
     @Override
     public boolean equals(@Nullable Object obj) {
         if (!(obj instanceof LayoutNodeInfo)) return false;
-        return mNode.equals(((LayoutNodeInfo) obj).mNode);
+        LayoutNode node = mNode.get();
+        LayoutNode anotherNode = ((LayoutNodeInfo) obj).mNode.get();
+        return node != null && node.equals(anotherNode);
     }
 
     @NonNull
     @Override
     public String toString() {
-        return LayoutNodeHelper.layoutNodeToString(mNode);
+        LayoutNode node = mNode.get();
+        if (node == null) return "null";
+        return LayoutNodeHelper.layoutNodeToString(node);
     }
 
     @NonNull
     public String toTreeString() {
-        return LayoutNodeHelper.toTreeString(mNode);
+        LayoutNode node = mNode.get();
+        if (node == null) return "null";
+        return LayoutNodeHelper.toTreeString(node);
     }
 
     public static void travelLayoutNodeTree(@NonNull LayoutNodeInfo nodeInfo,

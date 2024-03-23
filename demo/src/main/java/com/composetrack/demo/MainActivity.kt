@@ -10,10 +10,26 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.SetClickableCallback
+import androidx.compose.runtime.TraceListener
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.hym.composetrack.*
+import com.hym.composetrack.ClickableCallback
+import com.hym.composetrack.CollectRecomposeState
+import com.hym.composetrack.LayoutNodeInfo
+import com.hym.composetrack.NodeTrackId
+import com.hym.composetrack.OnAttachOnDetachCallback
+import com.hym.composetrack.RecomposeState
+import com.hym.composetrack.currentRootNode
+import com.hym.composetrack.path
+import com.hym.composetrack.rememberTrackId
+import com.hym.composetrack.trackId
 
 class MainActivity : ComponentActivity() {
     private val TAG = this.toString()
@@ -24,7 +40,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             // 获取根节点
             currentRootNode.apply {
-                modifier = modifier.trackId("root") // 为根节点设置 root 标识
+                // 为根节点设置 root 标识
+                modifier?.trackId("root")?.let {
+                    setModifier(it)
+                }
             }
 
             SetClickableCallback(object : ClickableCallback {

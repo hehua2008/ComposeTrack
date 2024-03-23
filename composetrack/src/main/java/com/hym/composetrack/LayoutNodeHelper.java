@@ -94,25 +94,34 @@ public final class LayoutNodeHelper {
             if (trackId != null) {
                 sb.append(trackId.getName());
             } else {
-                Class<?> measurePolicyClz = nd.getMeasurePolicy().getClass();
-                Class<?> enclosingClass = measurePolicyClz.getEnclosingClass();
-                String clzName = (enclosingClass != null) ?
-                        enclosingClass.getSimpleName() : measurePolicyClz.getSimpleName();
-                if (clzName.endsWith("Kt")) {
-                    clzName = clzName.substring(0, clzName.length() - 2);
-                }
-                if (clzName.endsWith("Impl")) {
-                    clzName = clzName.substring(0, clzName.length() - 4);
-                }
-                if (clzName.endsWith("MeasurePolicy")) {
-                    clzName = clzName.substring(0, clzName.length() - 13);
-                }
+                String clzName = getNodeName(nd);
                 sb.append(clzName);
             }
             sb.append('/');
         }
         sb.deleteCharAt(sb.length() - 1);
         return sb.toString();
+    }
+
+    /**
+     * @return LayoutNode measure policy name.
+     */
+    @NonNull
+    public static String getNodeName(LayoutNode node) {
+        Class<?> measurePolicyClz = node.getMeasurePolicy().getClass();
+        Class<?> enclosingClass = measurePolicyClz.getEnclosingClass();
+        String clzName = (enclosingClass != null) ?
+                enclosingClass.getSimpleName() : measurePolicyClz.getSimpleName();
+        if (clzName.endsWith("Kt")) {
+            clzName = clzName.substring(0, clzName.length() - 2);
+        }
+        if (clzName.endsWith("Impl")) {
+            clzName = clzName.substring(0, clzName.length() - 4);
+        }
+        if (clzName.endsWith("MeasurePolicy")) {
+            clzName = clzName.substring(0, clzName.length() - 13);
+        }
+        return clzName;
     }
 
     /**
