@@ -1,6 +1,8 @@
 import com.hym.composetrack.ANDROID_COMPOSE_VIEW_CLASS
 import com.hym.composetrack.CLICKABLE_CLASS
 import com.hym.composetrack.ClickableMethodList
+import com.hym.composetrack.LAYOUT_NODE_CLASS
+import com.hym.composetrack.LayoutNodeMethodList
 import com.hym.composetrack.TRACE_CLASS
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.Directory
@@ -61,7 +63,8 @@ abstract class CheckAsmTransformationTask : DefaultTask() {
         val classMap = mutableMapOf<String, Pair<JarFile, JarEntry>?>(
             CLICKABLE_CLASS to null,
             ANDROID_COMPOSE_VIEW_CLASS to null,
-            TRACE_CLASS to null
+            TRACE_CLASS to null,
+            LAYOUT_NODE_CLASS to null
         )
         var mapCount = 0
         outer@ for (jarFile in inputJars.get().map { JarFile(it.asFile) }) {
@@ -108,6 +111,15 @@ abstract class CheckAsmTransformationTask : DefaultTask() {
                 TRACE_CLASS -> {
                     // TODO
                     logger.log(LogLevel.WARN, "ComposeTrack transformed success: $clazz")
+                }
+
+                LAYOUT_NODE_CLASS -> {
+                    val allMethodsSignature = mutableSetOf<String>()
+                    classNode.methods.mapTo(allMethodsSignature) { it.name + it.desc }
+                    val different = LayoutNodeMethodList.subtract(allMethodsSignature)
+                    if (different.isNotEmpty()) {
+                        throw RuntimeException("$clazz has changed, please check these methods: $different")
+                    }
                 }
             }
         }
